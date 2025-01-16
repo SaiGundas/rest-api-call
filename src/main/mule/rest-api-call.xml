@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a8122033-8344-43f8-9650-0de027a02be9" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="924a1bcb-84f7-40c3-bfc2-e658a3150b92">
+		<http:request-connection protocol="HTTPS" host="api.openweathermap.org"/>
+	</http:request-config>
+	<flow name="rest-api-callFlow" doc:id="c86daba1-8ca9-43d8-95c7-b3bd1f76ff8a" >
+		<http:listener doc:name="Listener" doc:id="70cb1630-e9cd-452c-88a9-e2e6ec0b1f65" config-ref="HTTP_Listener_config" path="/call-weather-api" allowedMethods="GET, POST"/>
+		<logger level="INFO" doc:name="Logger" doc:id="8e5c5442-fb1b-4c99-b1c0-1badd0d96a46" message='Weather API flow is started successfully&#10;	"Activity": "API is being called"&#10;}'/>
+		<http:request method="GET" doc:name="Call an API" doc:id="3e413e69-3882-417f-b32b-4035edbdc281" config-ref="HTTP_Request_configuration" path="data/2.5/weather">
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Key" : "Value"
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"lat" : attributes.queryParams.'lat',
+	"lon" : attributes.queryParams.'lon',
+	"appid": attributes.queryParams.'appid'
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="4f88dfbb-197d-439a-a0da-96e33e7cddf7" message="payload"/>
+	</flow>
+</mule>
