@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout this repo
-        uses: actions/checkout@v3
+      uses: actions/checkout@v3 #Uses in-built action to Checkout the Repo
     - name: Cache Dependencies
-        uses: actions/cache@v3 #Uses in-built action to cache dependencies
+      uses: actions/cache@v3 #Uses in-built action to cache dependencies
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
