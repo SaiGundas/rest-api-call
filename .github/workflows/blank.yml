@@ -24,7 +24,7 @@ jobs:
         with:
           java-version: 11
       - name: Add repo credentials
-        uses: s4u/github-action-maven-settings@v2
+        uses: D:\Anypoint-workspace\GitHub-Personal\rest-api-call@v2
         with:
           servers: |
             [
