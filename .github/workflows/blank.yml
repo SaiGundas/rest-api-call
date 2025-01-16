@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      name: Checkout this repo
       uses: actions/checkout@v3 #Uses in-built action to checkout the code
-
+      name: Cache Dependencies
       uses: actions/cache@v3 #Uses in-built action to cache dependencies
       with:
         path: ~/.m2/repository
