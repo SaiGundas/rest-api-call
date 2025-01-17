@@ -57,15 +57,9 @@
 
 	<distributionManagement>
 		<repository>
-<<<<<<< HEAD
-			<id>github</id>
+		 <id>github</id>
 			<name>GitHub Packages</name>
 			<url>https://maven.pkg.github.com/SaiGundas/rest-api-call</url>
-=======
-			<id>internal.repo</id>
-			<name>Internal repo</name>
-			<url>https://maven.pkg.github.com/SaiGundas/rest-call-api</url>
->>>>>>> e7d44a26785c89b33ae7ddb4f2bf1f22ee5f47a4
 		</repository>
 	</distributionManagement>
 
