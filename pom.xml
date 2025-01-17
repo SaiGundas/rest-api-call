@@ -24,7 +24,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.9.9</version>
+				<version>3.2.0</version>
 			</plugin>
 			<plugin>
 				<groupId>org.mule.tools.maven</groupId>
@@ -52,9 +52,9 @@
 
 	<distributionManagement>
 		<repository>
-			<id>internal.repo</id>
-			<name>Internal repo</name>
-			<url>file:///home/thara/testesb/in</url>
+			<id>Repository</id>
+			<name>Github-Repository</name>
+			<url>https://github.com/SaiGundas/rest-api-call.git</url>
 		</repository>
 	</distributionManagement>
 
@@ -72,8 +72,6 @@
 			<layout>default</layout>
 		</repository>
 	</repositories>
-
-
 
 	<pluginRepositories>
 		<pluginRepository>
