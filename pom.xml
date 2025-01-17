@@ -50,13 +50,19 @@
 		</dependency>
 	</dependencies>
 
+	<!-- <distributionManagement> <repository> <id>internal.repo</id> <name>Internal 
+		repo</name> <url>file:///home/thara/testesb/in</url> </repository> </distributionManagement> 
+		<distributionManagement> <repository> <id>internal.repo</id> <name>Internal 
+		repo</name> <url>file:///home/thara/testesb/in</url> </repository> </distributionManagement> -->
+
 	<distributionManagement>
 		<repository>
-			<id>Repository</id>
-			<name>Github-Repository</name>
-			<url>https://github.com/SaiGundas/rest-api-call.git</url>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/SaiGundas/rest-api-call</url>
 		</repository>
 	</distributionManagement>
+
 
 	<repositories>
 		<repository>
