@@ -8,12 +8,7 @@ on:
     
 jobs:
   build:
-<<<<<<<< HEAD:.github/workflows/build-test.yaml
-   runs-on: ubuntu-latest
-    
-========
     runs-on: ubuntu-latest
->>>>>>>> e7d44a26785c89b33ae7ddb4f2bf1f22ee5f47a4:.github/workflows/build-test.yml
     steps:
     - name: Checkout this repo
       uses: actions/checkout@v3

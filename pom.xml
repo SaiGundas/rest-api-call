@@ -31,6 +31,25 @@
 				<artifactId>mule-maven-plugin</artifactId>
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
+				<configuration>
+					<cloudHubDeployment>
+						<uri>https://anypoint.mulesoft.com</uri>
+						<provider>MC</provider>
+						<environment>${env}</environment>
+						<target>Cloudhub-US-East-2</target>
+						<muleVersion>4.4.0</muleVersion>
+						<username>${anypoint.username}</username>
+						<password>${anypoint.password}</password>
+						<applicationName>${appName}</applicationName>
+						<replicas>1</replicas>
+						<vCores>0.1</vCores>
+						<skipDeploymentVerification>${skipDeploymentVerification}</skipDeploymentVerification>
+						<businessGroup>${business}</businessGroup>
+						<workerType>${vCore}</workerType>
+						<workers>${workers}</workers>
+						<objectStoreV2>true</objectStoreV2>
+					</cloudHubDeployment>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -57,7 +76,7 @@
 
 	<distributionManagement>
 		<repository>
-		 <id>github</id>
+			<id>github</id>
 			<name>GitHub Packages</name>
 			<url>https://maven.pkg.github.com/SaiGundas/rest-api-call</url>
 		</repository>
