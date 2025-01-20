@@ -9,7 +9,7 @@ on:
 jobs:
   build:
    runs-on: ubuntu-latest
-steps:
+   steps:
     - name: Checkout this repo
       uses: actions/checkout@v3
     - name: Cache dependencies
@@ -37,28 +37,29 @@ steps:
       with:
           name: artifacts
           path: target/*.jar
-        
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:    
-    - name: Checkout this repo
-      uses: actions/checkout@v3
-    - name: Cache dependencies
-      uses: actions/cache@v3
-      with:
+
+
+deploy:
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+  - name: Checkout this repo
+    uses: actions/checkout@v3
+  - name: Cache dependencies
+    uses: actions/cache@v3
+    with:
         path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        key: '${{ runner.os }}-maven-${{ hashFiles(''**/pom.xml'') }}'
         restore-keys: |
           ${{ runner.os }}-maven-
-    - uses: actions/download-artifact@v3
-      with:
+  - uses: actions/download-artifact@v3
+    with:
         name: artifacts
-    - name: Deploy to Sandbox
-      env:
-        USERNAME: ${{ secrets.ANYPOINT_PLATFORM_USERNAME }} 
-        PASSWORD: ${{ secrets.ANYPOINT_PLATFORM_PASSWORD }}
-      run: |
+  - name: Deploy to Sandbox
+    env:
+        USERNAME: '${{ secrets.ANYPOINT_PLATFORM_USERNAME }}'
+        PASSWORD: '${{ secrets.ANYPOINT_PLATFORM_PASSWORD }}'
+    run: |
         artifactName=$(ls *.jar | head -1)
         mvn deploy -DmuleDeploy \
          -Dmule.artifact=$artifactName \
