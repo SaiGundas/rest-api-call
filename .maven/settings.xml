@@ -1,32 +1,104 @@
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-  <servers>
-    <server>
-      <id>anypoint-exchange-repository</id>
-      <username>${env.CA_CLIENT_ID}</username>
-      <password>${env.CA_CLIENT_SECRET}</password>
-    </server>
-  </servers>
+<?xml version="1.0"?>
+<settings>
+
+    <pluginGroups>
+        <pluginGroup>org.mule.tools</pluginGroup>
+    </pluginGroups>
+
+    <servers>
+        <server>
+            <id>Repository</id>
+            <username>~~~Client~~~</username>
+            <password>${client.id}~?~${client.secret}</password>
+        </server>
+        <server>
+            <id>anypoint-exchange-v3</id>
+	        <username>~~~Client~~~</username>
+            <password>${client.id}~?~${client.secret}</password>
+        </server>
+        <server>
+            <id>anypoint-exchange-v2</id>
+	        <username>~~~Client~~~</username>
+            <password>${client.id}~?~${client.secret}</password>
+        </server>
+        <server>
+            <id>anypoint-exchange</id>
+	        <username>~~~Client~~~</username>
+            <password>${client.id}~?~${client.secret}</password>
+        </server>
+	    <server>
+            <id>PrivateExchangeRepository</id>
+	        <username>~~~Client~~~</username>
+            <password>${client.id}~?~${client.secret}</password>
+        </server>
+    	<server>
+            <id>PrivateExchangeRepositoryfleet</id>
+	        <username>~~~Client~~~</username>
+            <password>${client.id}~?~${client.secret}</password>
+        </server>
+        <server>
+            <id>MuleRepository</id>
+            <username>${username}</username>
+            <password>${password}</password>
+        </server>
+    </servers>
+    
 
   <profiles>
     <profile>
-      <id>default</id>
+      <id>mule-extra-repos</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
       <repositories>
         <repository>
-          <id>anypoint-exchange-repository</id>
-          <url>https://maven.anypoint.mulesoft.com/api/v2/organizations/32a04295-2d2f-413d-a801-c983d1cb2bce/maven</url>
+          <id>mule-public</id>
+          <url>https://repository.mulesoft.org/nexus/content/repositories/public</url>
+        </repository>
+      </repositories>
+
+      <pluginRepositories>
+        <pluginRepository>
+          <id>mule-public</id>
+          <url>https://repository.mulesoft.org/nexus/content/repositories/public</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+
+    <profile>
+      <id>Mule</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+
+      <repositories>
+       <repository>
+          <id>MuleRepository</id>
+          <name>MuleRepository</name>
+          <url>https://repository.mulesoft.org/nexus-ee/content/repositories/releases-ee/</url>
           <layout>default</layout>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
           <releases>
             <enabled>true</enabled>
           </releases>
-        </repository>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository> 
+
+         <repository>
+          <id>MuleRepositoryPublic</id>
+          <name>MuleRepositoryPublic</name>
+          <url>https://repository.mulesoft.org/nexus/content/repositories/public</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>         
       </repositories>
     </profile>
   </profiles>
-
-  <activeProfiles>
-    <activeProfile>default</activeProfile>
-  </activeProfiles>
 </settings>
