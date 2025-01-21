@@ -72,11 +72,11 @@ jobs:
         run: |
           echo "Listing downloaded files:"
           ls -l
-          ls target/
+          ls
 
       - name: Upload to Exchange
         run: |
-          artifactName=$(ls target/*.jar | head -1)
+          artifactName=$(ls *.jar | head -1)
           if [ -z "$artifactName" ]; then
             echo "Error: No artifact found to upload."
             exit 1
@@ -111,11 +111,11 @@ jobs:
         run: |
           echo "Listing downloaded files:"
           ls -l
-          ls target/
+          ls
 
       - name: Deploy to Sandbox
         run: |
-          artifactName=$(ls target/*.jar | head -1)
+          artifactName=$(ls *.jar | head -1)
           if [ -z "$artifactName" ]; then
             echo "Error: No artifact found to deploy."
             exit 1
