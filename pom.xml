@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mycompany</groupId>
+	<groupId>32a04295-2d2f-413d-a801-c983d1cb2bce</groupId>
 	<artifactId>rest-api-call</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
@@ -14,7 +16,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<app.runtime>4.8.1</app.runtime>
-		<mule.maven.plugin.version>3.8.2</mule.maven.plugin.version>
+		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
 		<app.name>rest-api-call</app.name>
 	</properties>
 
@@ -31,21 +33,25 @@
 				<version>${mule.maven.plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<cloudHubDeployment>
+					<cloudHub2Deployment>
 						<uri>https://anypoint.mulesoft.com</uri>
-						<muleVersion>${app.runtime}</muleVersion>
-						<username>${anypoint.username}</username>
-						<password>${anypoint.password}</password>
-						<applicationName>${appName}</applicationName>
+						<provider>MC</provider>
 						<environment>${environment}</environment>
-						<businessGroup>${business}</businessGroup>
-						<workerType>${vCore}</workerType>
-						<workers>${workers}</workers>
-						<properties>
-						<Note> Hello There!!!</Note>
-						</properties>
-						<objectStoreV2>true</objectStoreV2>
-					</cloudHubDeployment>
+						<target>$.{target}</target>
+						<muleVersion>${app.runtime}</muleVersion>
+						<server>ca.anypoint.credentials</server>
+						<applicationName>${appName}</applicationName>
+						<replicas>$.{replicas}</replicas>
+						<vCores>$.{vCores}</vCores>
+						<skipDeploymentVerification>${skipDeploymentVerification}</skipDeploymentVerification>
+						<integrations>
+							<services>
+								<objectStoreV2>
+									<enabled>true</enabled>
+								</objectStoreV2>
+							</services>
+						</integrations>
+					</cloudHub2Deployment>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -66,13 +72,8 @@
 		</dependency>
 	</dependencies>
 
-	<!-- <distributionManagement>
-		<repository>
-			<id>internal.repo</id>
-			<name>Internal repo</name>
-			<url>file:///home/sai/apipackage/in</url>
-		</repository>
-	</distributionManagement> -->
+	<!-- <distributionManagement> <repository> <id>internal.repo</id> <name>Internal 
+		repo</name> <url>file:///home/sai/apipackage/in</url> </repository> </distributionManagement> -->
 	<distributionManagement>
 		<repository>
 			<id>ca.anypoint.credential</id>
