@@ -1,9 +1,9 @@
 <settings>
     <servers>
         <server>
-            <id>ca.anypoint.credentials</id>
-            <username>github-actions</username>
-            <password>${CA_CLIENT_ID}~?~${CA_CLIENT_SECRET}</password>
+            <id>32a04295-2d2f-413d-a801-c983d1cb2bce</id>
+            <username>Bearer</username>
+            <password>efb24149-00f4-4e05-836b-1c9e03907a51</password>
         </server>
     </servers>
 </settings>

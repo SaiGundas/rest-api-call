@@ -15,19 +15,19 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<app.runtime>4.8.1</app.runtime>
+<app.runtime>4.8.1</app.runtime>
 		<mule.maven.plugin.version>4.3.0</mule.maven.plugin.version>
 		<app.name>rest-api-call</app.name>
 	</properties>
 
 	<!-- <build> -->
 
-	<build>
+<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>3.2.0</version>
+    			<artifactId>maven-clean-plugin</artifactId>
+    			<version>3.3.2</version>
 			</plugin>
 			<plugin>
 				<groupId>org.mule.tools.maven</groupId>
@@ -47,6 +47,9 @@
 						<replicas>1</replicas>
 						<vCores>0.1</vCores>
 						<skipDeploymentVerification>${skipDeploymentVerification}</skipDeploymentVerification>
+						<connectedAppClientId>$.{username}</connectedAppClientId>
+                		<connectedAppClientSecret>$.{password}</connectedAppClientSecret>
+                		<connectedAppGrantType>client_credentials</connectedAppGrantType>
 						<deploymentSettings>
 							<generateDefaultPublicUrl>true</generateDefaultPublicUrl>
 						</deploymentSettings>
@@ -63,31 +66,6 @@
 		</plugins>
 	</build>
 
-	<!-- <distributionManagement> <repository> <id>internal.repo</id> <name>Internal 
-		repo</name> <url>file:///home/sai/apipackage/in</url> </repository> </distributionManagement> -->
-
-	<!-- Repositories -->
-
-	<repositories>
-		<repository>
-			<id>anypoint-exchange-v3</id>
-			<name>Anypoint Exchange</name>
-			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>mulesoft-releases</id>
-			<name>MuleSoft Releases Repository</name>
-			<url>https://repository.mulesoft.org/releases/</url>
-			<layout>default</layout>
-		</repository>
-		<repository>
-			<id>ca.anypoint.credential</id>
-			<name>Corporate Repository</name>
-			<url>https://maven.anypoint.mulesoft.com/api/v2/organizations/${project.groupId}/maven</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
 			<id>mulesoft-releases</id>
@@ -100,7 +78,28 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-	<!-- <dependencies> -->
+
+<repositories>
+		<repository>
+			<id>anypoint-exchange-v3</id>
+			<name>Anypoint Exchange</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
+			<layout>default</layout>
+		</repository>
+    	<repository>
+        	<id>${id}</id>
+        	<url>https://maven.anypoint.mulesoft.com/api/v2/organizations/${project.groupId}-/maven</url>
+			<layout>default</layout>
+    	</repository>
+</repositories>
+<distributionManagement>
+    <repository>
+        <id>${id}</id>
+        <url>https://maven.anypoint.mulesoft.com/api/v2/organizations/${project.groupId}/maven</url>
+    </repository>
+</distributionManagement>
+
+<!-- <dependencies> -->
 	<dependencies>
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
@@ -115,15 +114,5 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>
-
-	<!--Distribution Management -->
-	<distributionManagement>
-		<repository>
-			<id>ca.anypoint.credentials</id>
-			<name>Corporate Repository</name>
-			<url>https://maven.anypoint.mulesoft.com/api/v2/organizations/${project.groupId}/maven</url>
-			<layout>default</layout>
-		</repository>
-	</distributionManagement>
 
 </project>
