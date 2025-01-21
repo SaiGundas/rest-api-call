@@ -1,9 +1,32 @@
-<settings>
-    <servers>
-        <server>
-            <id>32a04295-2d2f-413d-a801-c983d1cb2bce</id>
-            <username>${env.CA_CLIENT_ID}</username>
-            <password>${env.CA_CLIENT_SECRET}</password>
-        </server>
-    </servers>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <servers>
+    <server>
+      <id>anypoint-exchange-repository</id>
+      <username>${env.CA_CLIENT_ID}</username>
+      <password>${env.CA_CLIENT_SECRET}</password>
+    </server>
+  </servers>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <repositories>
+        <repository>
+          <id>anypoint-exchange-repository</id>
+          <url>https://maven.anypoint.mulesoft.com/api/v2/organizations/32a04295-2d2f-413d-a801-c983d1cb2bce/maven</url>
+          <layout>default</layout>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>default</activeProfile>
+  </activeProfiles>
 </settings>
