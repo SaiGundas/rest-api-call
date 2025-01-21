@@ -1,121 +1,62 @@
-name: Build and Deploy to Sandbox
+name: Publish to Exchange & Deploy to CH2.0
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
-
-jobs:
+    branches: [ main ]
+    
+jobs:         
   build:
     runs-on: ubuntu-latest
-    env:
-      CA_CLIENT_ID: ${{ secrets.CA_CLIENT_ID }}
-      CA_CLIENT_SECRET: ${{ secrets.CA_CLIENT_SECRET }}
-      BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }} # Add the bearer token here
-
     steps:
-      # Checkout the code
-      - uses: actions/checkout@v4
+      - name: Checkout this repo
+        uses: actions/checkout@v4
 
-      # Cache Maven dependencies
-      - uses: actions/cache@v4
+      - name: Cache dependencies
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          restore-keys: ${{ runner.os }}-maven-
 
-      # Set up JDK 11
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v4
         with:
-          java-version: 11
-          distribution: 'zulu'
+          distribution: "zulu"
+          java-version: 8
 
-      # Build the application with Maven, including bearer token
-      - name: Build with Maven
+      - name: Increment version and commit
         run: |
-          echo "Using Bearer Token: $BEARER_TOKEN"
-          mvn -B package \
-            -s .maven/settings.xml \
-            -Dauth.bearer.token=$BEARER_TOKEN
-
-      # Stamp the artifact file name with commit hash
-      - name: Stamp artifact file name with commit hash
+          # Increment last number in version in pom.xml
+          current_version=$(grep "<version>" pom.xml | head -n 1 | awk -F'[><]' '{print $3}')
+          incremented_version=$(echo $current_version | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+          sed -i "s/<version>$current_version<\/version>/<version>$incremented_version<\/version>/" pom.xml
+          git config --global user.email "gundasaiabhishek@gmail.com"
+          git config --global user.name "gundasaiabhishek@gmail.com"
+          git add pom.xml
+          git commit -m "Incremented version to $incremented_version" || echo "No changes to commit"
+          git push
+      
+      - name: Publish to Exchange
         run: |
-          artifactName1=$(ls target/*.jar | head -1)
-          commitHash=$(git rev-parse --short "$GITHUB_SHA")
-          artifactName2=$(ls target/*.jar | head -1 | sed "s/.jar/-$commitHash.jar/g")
-          mv $artifactName1 $artifactName2
-
-      # Upload the artifact
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifacts
-          path: target/*.jar
-
-  upload:
-    needs: build
-    runs-on: ubuntu-latest
-    env:
-      CA_CLIENT_ID: ${{ secrets.CA_CLIENT_ID }}
-      CA_CLIENT_SECRET: ${{ secrets.CA_CLIENT_SECRET }}
-      BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }} # Include in upload if needed
-
-    steps:
-      # Checkout the code
-      - uses: actions/checkout@v4
-
-      # Download the artifact
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifacts
-
-      # Upload the artifact to MuleSoft Exchange
-      - name: Upload to MuleSoft Exchange
-        run: |
-          artifactName=$(ls *.jar | head -1)
-          if [ -z "$artifactName" ]; then
-            echo "Error: No artifact found to upload."
-            exit 1
-          fi
-          echo "Uploading $artifactName to MuleSoft Exchange..."
-          mvn deploy \
-            -s .maven/settings.xml \
-            -Dmule.artifact=$artifactName \
-            -Dauth.bearer.token=$BEARER_TOKEN \
-            -DskipTests
+          mvn deploy --settings .maven/settings.xml -DskipMunitTests -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}" -Dusername="${{ secrets.USERNAME }}" -Dpassword="${{ secrets.PASSWORD }}"
 
   deploy:
-    needs: upload
+    needs: build
     runs-on: ubuntu-latest
-    env:
-      CA_CLIENT_ID: ${{ secrets.CA_CLIENT_ID }}
-      CA_CLIENT_SECRET: ${{ secrets.CA_CLIENT_SECRET }}
-      BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }} # Include in deployment if needed
-
     steps:
-      # Checkout the code
-      - uses: actions/checkout@v4
+      - name: Checkout this repo
+        uses: actions/checkout@v4
 
-      # Download the artifact
-      - uses: actions/download-artifact@v3
+      - name: Cache dependencies
+        uses: actions/cache@v4
         with:
-          name: artifacts
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
 
-      # Deploy the artifact to Sandbox
-      - name: Deploy to Sandbox
+      - name: Deploy to CloudHub 2.0
         run: |
-          artifactName=$(ls *.jar | head -1)
-          if [ -z "$artifactName" ]; then
-            echo "Error: No artifact found to deploy."
-            exit 1
-          fi
-          echo "Deploying $artifactName to MuleSoft Sandbox..."
-          mvn deploy -DmuleDeploy \
-            -Dmule.artifact=$artifactName \
-            -s .maven/settings.xml \
-            -Dauth.bearer.token=$BEARER_TOKEN \
-            -DskipTests \
-            -DskipDeploymentVerification="true"
+          mvn deploy --settings .maven/settings.xml -DskipMunitTests -DmuleDeploy -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}" -Ddecryption.key="${{ secrets.DECRYPTION_KEY }}" -Dusername="${{ secrets.USERNAME }}" -Dpassword="${{ secrets.PASSWORD }}" -Danypoint.platform.client_id="${{ secrets.anypoint.platform.client_id }}" -Danypoint.platform.client_secret="${{ secrets.anypoint.platform.client_secret }}"
+          #mvn deploy --settings .maven/settings.xml -DskipMunitTests -DmuleDeploy -Dclient.id="${{ secrets.CONNECTED_APP_CLIENT_ID }}" -Dclient.secret="${{ secrets.CONNECTED_APP_CLIENT_SECRET }}" -Ddecryption.key="${{ secrets.DECRYPTION_KEY }}" -Dusername="${{ secrets.USERNAME }}" -Dpassword="${{ secrets.PASSWORD }}"
+          #-Ddecryption.key="${{ secrets.DECRYPTION_KEY }}" 
+          # -Dusername="${{ secrets.USERNAME }}" -Dpassword="${{ secrets.PASSWORD }}"
