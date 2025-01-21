@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      CA_CLIENT_ID: ${{ secrets.CA_CLIENT_ID }}
+      CA_CLIENT_ID: $ {{ secrets.CA_CLIENT_ID }}
       CA_CLIENT_SECRET: $ {{ secrets.CA_CLIENT_SECRET }}
         
 
@@ -57,8 +57,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      CA_CLIENT_ID: ${{ secrets.CA_CLIENT_ID }}
-      CA_CLIENT_SECRET: ${{ secrets.CA_CLIENT_SECRET }}
+      CA_CLIENT_ID: $ {{ secrets.CA_CLIENT_ID }}
+      CA_CLIENT_SECRET: $ {{ secrets.CA_CLIENT_SECRET }}
 
     steps:    
     
@@ -89,8 +89,8 @@ jobs:
     needs: upload
     runs-on: ubuntu-latest
     env:
-      CA_CLIENT_ID: ${{ secrets.CA_CLIENT_ID }}
-      CA_CLIENT_SECRET: ${{ secrets.CA_CLIENT_SECRET }}
+      CA_CLIENT_ID: $ {{ secrets.CA_CLIENT_ID }}
+      CA_CLIENT_SECRET: $ {{ secrets.CA_CLIENT_SECRET }}
 
     steps:    
     
@@ -114,4 +114,4 @@ jobs:
           -Dmule.artifact=$artifactName \
           -s .maven/settings.xml \
           -DskipTests \
-          -DskipDeploymentVerification="true"
+          -DskipDeploymentVerification="true"
