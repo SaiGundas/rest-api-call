@@ -11,6 +11,7 @@ jobs:
     env:
       CA_CLIENT_ID: ${{ secrets.CA_CLIENT_ID }}
       CA_CLIENT_SECRET: ${{ secrets.CA_CLIENT_SECRET }}
+      BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }} # Add the bearer token here
 
     steps:
       # Checkout the code
@@ -31,13 +32,13 @@ jobs:
           java-version: 11
           distribution: 'zulu'
 
-      # Print effective settings (optional)
-      - name: Print effective-settings (optional)
-        run: mvn help:effective-settings
-
-      # Build the application with Maven
+      # Build the application with Maven, including bearer token
       - name: Build with Maven
-        run: mvn -B package -s .maven/settings.xml
+        run: |
+          echo "Using Bearer Token: $BEARER_TOKEN"
+          mvn -B package \
+            -s .maven/settings.xml \
+            -Dauth.bearer.token=$BEARER_TOKEN
 
       # Stamp the artifact file name with commit hash
       - name: Stamp artifact file name with commit hash
@@ -48,7 +49,7 @@ jobs:
           mv $artifactName1 $artifactName2
 
       # Upload the artifact
-      - name: Upload artifact 
+      - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
@@ -60,18 +61,11 @@ jobs:
     env:
       CA_CLIENT_ID: ${{ secrets.CA_CLIENT_ID }}
       CA_CLIENT_SECRET: ${{ secrets.CA_CLIENT_SECRET }}
+      BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }} # Include in upload if needed
 
     steps:
       # Checkout the code
-      - uses: actions/checkout@v3
-
-      # Cache Maven dependencies
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      - uses: actions/checkout@v4
 
       # Download the artifact
       - uses: actions/download-artifact@v3
@@ -90,6 +84,7 @@ jobs:
           mvn deploy \
             -s .maven/settings.xml \
             -Dmule.artifact=$artifactName \
+            -Dauth.bearer.token=$BEARER_TOKEN \
             -DskipTests
 
   deploy:
@@ -98,18 +93,11 @@ jobs:
     env:
       CA_CLIENT_ID: ${{ secrets.CA_CLIENT_ID }}
       CA_CLIENT_SECRET: ${{ secrets.CA_CLIENT_SECRET }}
+      BEARER_TOKEN: ${{ secrets.BEARER_TOKEN }} # Include in deployment if needed
 
     steps:
       # Checkout the code
-      - uses: actions/checkout@v3
-
-      # Cache Maven dependencies
-      - uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      - uses: actions/checkout@v4
 
       # Download the artifact
       - uses: actions/download-artifact@v3
@@ -128,5 +116,6 @@ jobs:
           mvn deploy -DmuleDeploy \
             -Dmule.artifact=$artifactName \
             -s .maven/settings.xml \
+            -Dauth.bearer.token=$BEARER_TOKEN \
             -DskipTests \
             -DskipDeploymentVerification="true"
